@@ -1,3 +1,5 @@
+[![PyPI version](https://badge.fury.io/py/django-rest-secureview.svg)](https://badge.fury.io/py/django-rest-secureview)
+
 # django-rest-secureview
 
 A collection of decorators to enforce conditions on [Django REST Framework](http://www.django-rest-framework.org/) API routes that are accessed by the User. At the moment, it focuses on enforcing specific model keys in POST params, or requiring that a User has a foreign key relation to a model they are accessing. 
@@ -59,7 +61,7 @@ A collection of decorators to enforce conditions on [Django REST Framework](http
 	```
 
 ## Testing
-[Tox](tox.testrun.org) should be in your virtual environment in order to run tests. Other dependencies, such as the Django REST Framework will be packaged separately in Tox's virtual testing environment. 
+[Tox](https://tox.testrun.org) should be in your virtual environment in order to run tests. Other dependencies, such as the Django REST Framework will be packaged separately in Tox's virtual testing environment. 
 
 ``` sh
 ./run_tests.sh
