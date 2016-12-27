@@ -16,6 +16,7 @@ __pycache__/
 *.egg-info/
 .tox/
 .cache/
+.pypirc
 
 # OS generated files
 ######################

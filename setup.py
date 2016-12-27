@@ -19,6 +19,7 @@ setup(
     author='Francis Mitra',
     author_email='francismitra@gmail.com',
     description='Enforces client ViewSet requirements for Django Rest Framework',
+    keywords = ['django', 'django-restframework'],
     long_description=long_description,
     packages=find_packages(exclude=['tests']),
     include_package_data=True,

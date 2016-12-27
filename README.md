@@ -61,4 +61,6 @@ A collection of decorators to enforce conditions on [Django REST Framework](http
 ## Testing
 [Tox](tox.testrun.org) should be in your virtual environment in order to run tests. Other dependencies, such as the Django REST Framework will be packaged separately in Tox's virtual testing environment. 
 
-``` ./run_tests.sh```
+``` sh
+./run_tests.sh
+```
