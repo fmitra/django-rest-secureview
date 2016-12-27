@@ -1,4 +1,6 @@
 [![PyPI version](https://badge.fury.io/py/django-rest-secureview.svg)](https://badge.fury.io/py/django-rest-secureview)
+[![Build Status](https://travis-ci.org/fmitra/django-rest-secureview.svg?branch=master)](https://travis-ci.org/fmitra/django-rest-secureview)
+
 
 # django-rest-secureview
 
