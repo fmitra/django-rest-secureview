@@ -14,7 +14,7 @@ with open(os.path.join(here, 'README.md')) as fp:
 setup(
     name='django-rest-secureview',
     version='0.0.1',
-    url='https://github.com/fmitra/django_services',
+    url='https://github.com/fmitra/django-rest-secureview',
     license='MIT',
     author='Francis Mitra',
     author_email='francismitra@gmail.com',
