@@ -15,6 +15,7 @@ setup(
     name='django-rest-secureview',
     version='0.0.1',
     url='https://github.com/fmitra/django-rest-secureview',
+    download_url = 'https://github.com/fmitra/django-rest-secureview/tarball/0.0.1',
     license='MIT',
     author='Francis Mitra',
     author_email='francismitra@gmail.com',
