@@ -12,7 +12,8 @@ from django.conf import settings
 # We need to configure Django settings before importing SecureView
 # because we are running this test set outside of Django
 settings.configure()
-from django_rest_secureview.decorators import *
+from django_rest_secureview.decorators import require
+from django_rest_secureview.blueprints import Params, Owner, OwnerParams
 
 
 MockUser = MagicMock()
@@ -79,8 +80,8 @@ class SecureViewTest(unittest.TestCase):
         view = MockView().list_view
         request = MockRequest(QueryDict('dog=1&cat=2'))
 
-        response_1 = require_params(params=['dog', 'cat'])(view)(request)
-        response_2 = require_params(params=['dog', 'mouse'])(view)(request)
+        response_1 = require(Params, params=['dog', 'cat'])(view)(request)
+        response_2 = require(Params, params=['dog', 'mouse'])(view)(request)
 
         self.assertIsNone(response_1)
         self.assertEqual("Response", response_2.__class__.__name__)
@@ -99,9 +100,9 @@ class SecureViewTest(unittest.TestCase):
 
         model = MockModelManager()
 
-        response_1 = require_owner(model=model)(view)(request_1, pk=1)
+        response_1 = require(Owner, model=model)(view)(request_1, pk=1)
         # This should fail because a new user is being associated with the request
-        response_2 = require_owner(model=model)(view)(request_2, pk=1)
+        response_2 = require(Owner, model=model)(view)(request_2, pk=1)
 
         self.assertIsNone(response_1)
         self.assertEqual(response_2.__class__.__name__, "Response")
@@ -119,19 +120,20 @@ class SecureViewTest(unittest.TestCase):
         request_3 = MockRequest(data=QueryDict('dog=1&cat=2'), user=NewUser)
         model = MockModelManager()
 
-        response_1 = (require_owner_with_params(model=model, 
-                                                params=['dog', 'cat'])
-                                                (view)(request_1, pk=1))
+        response_1 = require(OwnerParams, 
+                             model=model, 
+                             params=['cat', 'dog'])(view)(request_1, pk=1)
+        
+        response_2 = require(OwnerParams, 
+                             model=model, 
+                             params=['cat', 'dog'])(view)(request_2, pk=1)
 
-        response_2 = (require_owner_with_params(model=model, 
-                                                params=['dog', 'cat'])
-                                                (view)(request_2, pk=1))
+        response_3 = require(OwnerParams, 
+                             model=model, 
+                             params=['cat', 'dog'])(view)(request_3, pk=1)
 
-        response_3 = (require_owner_with_params(model=model, 
-                                                params=['dog', 'cat'])
-                                                (view)(request_3, pk=1))
         self.assertIsNone(response_1)
-        self.assertEqual(response_2.data, {"detail":"Missing keys dog, cat"})
+        self.assertEqual(response_2.data, {"detail":"Missing keys cat, dog"})
         self.assertEqual(response_3.data, {"detail":"Unauthorized access"})
 
 
