@@ -69,7 +69,7 @@ class MockView(object):
         pass
 
 
-class SecureViewTest(unittest.TestCase):
+class DecoratorsTest(unittest.TestCase):
 
     def test_it_should_require_user_defiend_params(self):
         """

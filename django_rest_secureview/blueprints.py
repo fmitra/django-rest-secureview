@@ -39,7 +39,7 @@ class ErrorBlueprint(object):
         self.pk = request_kwargs
 
     @abc.abstractmethod
-    def enforce(self, params):
+    def enforce(self, params=None):
         """
         Enforce specific conditions on an API endpoint. If conditions are
         not met, it will return a failing HTTP status code (ex. 401)
@@ -51,7 +51,7 @@ class ErrorBlueprint(object):
         """
         pass
 
-    def errors_found(self, params):
+    def errors_found(self, params=None):
         """
         Returns a Response object with a failing HTTP status code (ex. 401)
         if API conditions were not met by the User.
@@ -65,6 +65,10 @@ class Params(ErrorBlueprint):
     Require specific POST params to be submitted in requests
     """
     def enforce_params(self, params):
+        """
+        :param params: List of expected POST params
+        :type params: dict['params'] = list()
+        """
         missing_keys = []
         valid_keys = params['params']
         submitted_keys = self.request.data.keys()
@@ -88,6 +92,10 @@ class Owner(ErrorBlueprint):
     with the requested model instance
     """
     def enforce_owner(self, params):
+        """
+        :param params: Model affiliated with User
+        :type params: dict['model'] = Model
+        """
         try:
             model = params['model'].objects.get(id=self.pk['pk'])
         except model.DoesNotExist:
