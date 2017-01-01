@@ -32,8 +32,8 @@ class ViewRulesTest(unittest.TestCase):
         check_1 = blueprint.errors_found({'params':['cat', 'dog']})
         check_2 = blueprint.errors_found({'params':['cat', 'mouse']})
 
-        self.assertIsNone(check_1)
-        self.assertEqual(check_2.data['detail'], 'Missing keys mouse')
+        self.assertFalse(check_1[0])
+        self.assertEqual(check_2[1].data['detail'], 'Missing keys mouse')
 
     def test_it_can_check_model_relations(self):
         """
@@ -50,8 +50,8 @@ class ViewRulesTest(unittest.TestCase):
         check_1 = blueprint_1.errors_found({'model': model})
         check_2 = blueprint_2.errors_found({'model': model})
 
-        self.assertIsNone(check_1)
-        self.assertEqual(check_2.data['detail'], 'Unauthorized access')
+        self.assertFalse(check_1[0])
+        self.assertEqual(check_2[1].data['detail'], 'Unauthorized access')
 
     def test_it_can_check_model_relations_and_params(self):
         """
@@ -68,7 +68,7 @@ class ViewRulesTest(unittest.TestCase):
 
         blueprint.enforce_params.assert_called_with(params)
         blueprint.enforce_owner.assert_called_with(params)
-        self.assertIsNone(check)
+        self.assertFalse(check[0])
 
 
 
