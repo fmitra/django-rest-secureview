@@ -18,11 +18,11 @@ A collection of decorators to enforce conditions on [Django REST Framework](http
 
 	`pip install django-rest-secureview`
 
-2. Import decorators and blueprints
+2. Import decorators and viewset rules
 
 	``` python
 	from django_rest_secureview.decorators import require
-	from django_rest_secureview.blueprints import Params
+	from django_rest_secureview.view_rules import Params
 	```
 
 3. Decorate ViewSets
@@ -30,7 +30,7 @@ A collection of decorators to enforce conditions on [Django REST Framework](http
 	``` python
 	from rest_framework.viewsets import ModelViewSet
 	from django_rest_secureview.decorators import require
-	from django_rest_secureview.blueprints import Params
+	from django_rest_secureview.view_rule import Params
 	
 	class ApiEndpoint(ModelViewSet):
 	    @require(Params, params=['dog', 'cat'])
@@ -38,9 +38,9 @@ A collection of decorators to enforce conditions on [Django REST Framework](http
 	        pass
 	```
 
-## Blueprints
+## ViewRules
 
-Blueprints contain the logic behind the API conditions being enforced. Using the `require` decorator requires a Blueprint at the minimum. The Blueprints supplied by default in this package all expect a certain keyword arguments to compliment them. If you need additional functionality, you can create your own Blueprint (explained below)
+ViewRules contain the logic behind the API conditions being enforced. Using the `require` decorator requires a ViewRule at the minimum. The default ViewRules in this package all expect a certain keyword arguments to compliment them. If you need additional functionality, you can create your own ViewRule (explained below)
 
 1. `Params`: Requires specific POST params to be submitted in reqeusts
   * kwargs: `params` list
@@ -58,7 +58,7 @@ Blueprints contain the logic behind the API conditions being enforced. Using the
 
 ## Decorators
 
-1. `require`: Accepts a Blueprint detailing API conidtions and an arbitrary number of keyword values. For more information, reference the Blueprint documentation.
+1. `require`: Accepts a ViewRule detailing API conditions and an arbitrary number of keyword values. For more information, reference the ViewRule documentation.
 
 	``` python
 	# Expects an animal and name param to be provided in the POST request
@@ -79,23 +79,27 @@ Blueprints contain the logic behind the API conditions being enforced. Using the
 	    pass
 	```
 
-## Creating Your Own Blueprints
+## Creating Your Own ViewRules
 
-We can create our own Blueprints by extending the ErrorBlueprint abstract class supplied in the blueprints module and implementing an `enforce` method. For convenience, HTTP status codes from the Django REST Framework are available in the class's `http_status` attribute and arguments in the request object are available in the class's `request` attribute.
+We can create our own ViewRules by extending the ViewRule abstract class supplied in the view_rules module and implementing an `enforce` method. For convenience, HTTP status codes from the Django REST Framework are available in the class's `status` attribute and arguments in the request object are available in the class's `request` attribute.
+
+All ViewRules are expected to have an `enforce` method that returns a JSON-serializable response if specific conditions are not met. If conditions are not met, the ViewSet will deliver this response instead of the response defined within the ViewSet's action method. 
+
+More status codes: [REST Framework Status Codes](http://www.django-rest-framework.org/api-guide/status-codes/)
 
 ``` python
-from django_rest_secureview.blueprints import ErrorBlueprint
+from django_rest_secureview.view_rules import ViewRule
 
-class MyCondition(ErrorBlueprint):
+class MyCondition(ViewRule):
     def enforce(self, params=None):
-        # Check who the User is
-        user = self.request.user
+        # Check who the User is if necessary
+        # user = self.request.user
         # Some rules here
         condition_met = False
         if not condition_met:
-	        code = self.http_status.HTTP_400_BAD_REQUEST
-            return self.response({"detail":"Whoops something went wrong"}, 
-                                 status=code)
+	        code = self.status.HTTP_400_BAD_REQUEST
+	        notice = {"detail":"Whoops something went wrong"}
+            return self.response(data=notice, status=code)
 ```
 
 ## Testing

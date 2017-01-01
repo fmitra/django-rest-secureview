@@ -16,10 +16,10 @@ try:
 except RuntimeError:
     pass
 
-from django_rest_secureview.blueprints import Params, Owner, OwnerParams
+from django_rest_secureview.view_rules import Params, Owner, OwnerParams
 from . mocks import MockRequest, MockModelManager
 
-class BlueprintsTest(unittest.TestCase):
+class ViewRulesTest(unittest.TestCase):
 
     def test_it_can_compare_param_keys(self):
         """

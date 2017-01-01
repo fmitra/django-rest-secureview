@@ -18,7 +18,7 @@ def require(Blueprint, **params):
         def require(*request_args, **request_kwargs):
             blueprint = Blueprint(request_args, request_kwargs)
             failed = blueprint.errors_found(params)
-            if failed: return failed
+            if failed[0]: return failed[1]
             return viewset(*request_args, **request_kwargs)
         return require
     return wrapper
