@@ -55,9 +55,13 @@ class ViewRule(object):
         :type params: dict
         :returns: Details on whether the view rules were met
         :rtype: tuple (boolean, response)
+        :raises ValueError: If non Response-type was provided by the envorce method
         """
         response = self.enforce(params)
         errors = True if response else False
+        if response and response.__class__.__name__ != 'Response':
+            rname = response.__class__.__name__
+            raise ValueError('Expected Response, received {}'.format(rname))
         return (errors, response)
 
 
