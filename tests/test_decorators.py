@@ -11,7 +11,7 @@ except RuntimeError:
     pass
 
 from django_rest_secureview.decorators import require
-from django_rest_secureview.blueprints import Params, Owner, OwnerParams
+from django_rest_secureview.view_rules import Params, Owner, OwnerParams
 from . mocks import * 
 
 
