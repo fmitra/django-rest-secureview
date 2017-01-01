@@ -71,7 +71,8 @@ class ViewRulesTest(unittest.TestCase):
         self.assertFalse(check[0])
 
 
-
+if __name__ == '__main__':
+    unittest.main()
 
 
 
