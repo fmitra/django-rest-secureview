@@ -41,9 +41,10 @@ class MockModelManager(object):
 
 class MockRequest(object):
     """ Request objects are expected to contain user and data attributes """
-    def __init__(self, data=None, user=MockUser):
+    def __init__(self, data=None, method="GET", user=MockUser):
         self.request = MagicMock()
         self.request.user = user
+        self.request.method = method
         if data is not None:
             self.request.data = data
 

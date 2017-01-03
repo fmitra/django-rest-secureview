@@ -67,13 +67,18 @@ class ViewRule(object):
 
 class Params(ViewRule):
     """ 
-    Require specific POST params to be submitted in requests
+    Require specific POST params to be submitted in requests.
+    In the event of a GET request, the ViewRule should skip
+    over the condition. 
     """
     def enforce_params(self, params):
         """
         :param params: List of expected POST params
         :type params: dict['params'] = list()
         """
+        if self.request.method != 'POST':
+            return
+
         missing_keys = []
         valid_keys = params['params']
         submitted_keys = self.request.data.keys()
@@ -94,13 +99,16 @@ class Params(ViewRule):
 class Owner(ViewRule):
     """
     Requires authenticated User to have a foreign key relationship
-    with the requested model instance
+    with the requested model instance. Expects to be called on a
+    detail_route
     """
     def enforce_owner(self, params):
         """
         :param params: Model affiliated with User
         :type params: dict['model'] = Model
         """
+        assert (self.pk is not None), "Model pk is not assigned."
+
         try:
             model = params['model'].objects.get(id=self.pk['pk'])
         except model.DoesNotExist:

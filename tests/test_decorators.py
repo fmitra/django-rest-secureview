@@ -17,19 +17,22 @@ from . mocks import *
 
 class DecoratorsTest(unittest.TestCase):
 
-    def test_it_should_require_user_defiend_params(self):
+    def test_it_should_require_user_defined_params(self):
         """
         Request object should contain specific params
         to go through. If params are not provided, a Response
         object is returned
         """
         view = MockView().list_view
-        request = MockRequest(QueryDict('dog=1&cat=2'))
+        request_1 = MockRequest(data=QueryDict('dog=1&cat=2'), method="POST")
+        request_2 = MockRequest(data=QueryDict('dog=1&cat=2'))
 
-        response_1 = require(Params, params=['dog', 'cat'])(view)(request)
-        response_2 = require(Params, params=['dog', 'mouse'])(view)(request)
+        response_1 = require(Params, params=['dog', 'cat'])(view)(request_1)
+        response_2 = require(Params, params=['dog', 'mouse'])(view)(request_1)
+        response_3 = require(Params, params=['dog', 'cat'])(view)(request_2)
 
         self.assertIsNone(response_1)
+        self.assertIsNone(response_3)
         self.assertEqual("Response", response_2.__class__.__name__)
         self.assertEqual(response_2.data, {"detail": "Missing keys mouse"})
 
@@ -61,8 +64,8 @@ class DecoratorsTest(unittest.TestCase):
         """
         NewUser = MagicMock()
         view = MockView().retrieve_view
-        request_1 = MockRequest(QueryDict('dog=1&cat=2'))
-        request_2 = MockRequest(QueryDict('mouse=1&rabbit=2'))
+        request_1 = MockRequest(data=QueryDict('dog=1&cat=2'), method="POST")
+        request_2 = MockRequest(data=QueryDict('mouse=1&rabbit=2'), method="POST")
         request_3 = MockRequest(data=QueryDict('dog=1&cat=2'), user=NewUser)
         model = MockModelManager()
 
