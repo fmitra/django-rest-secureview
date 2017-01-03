@@ -26,7 +26,7 @@ class ViewRulesTest(unittest.TestCase):
         Confirms that the params in the POST request match
         the specified params for the endpoint
         """
-        request = MockRequest(QueryDict('dog=1&cat=2'))
+        request = MockRequest(data=QueryDict('dog=1&cat=2'), method="POST")
         view_rule = Params([request], None)
         
         check_1 = view_rule.errors_found({'params':['cat', 'dog']})
@@ -57,7 +57,7 @@ class ViewRulesTest(unittest.TestCase):
         """
         Confirms Owner and Params logic are called together
         """
-        request = MockRequest(QueryDict('dog=1&cat=2'))
+        request = MockRequest(data=QueryDict('dog=1&cat=2'), method="POST")
         model = MockModelManager()
         view_rule = OwnerParams([request], {'pk':1})
         view_rule.enforce_params = MagicMock(return_value=None)
@@ -83,6 +83,17 @@ class ViewRulesTest(unittest.TestCase):
         view_rule = CustomRule([request], {'pk':2})
         with self.assertRaises(ValueError):
             view_rule.errors_found()
+
+    def test_it_can_raise_an_attribute_error_for_pk(self):
+        """
+        Owner ViewRule expects to be called on a detailed route
+        """
+        request = MockRequest()
+        model = MockModelManager()
+        view_rule = Owner([request], None)
+        with self.assertRaises(AssertionError):
+            view_rule.errors_found({'model': model})
+
 
 if __name__ == '__main__':
     unittest.main()
