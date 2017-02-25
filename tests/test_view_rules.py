@@ -1,4 +1,4 @@
-# py27 vs py34 compatibility 
+# py27 vs py34 compatibility
 try:
     from unittest.mock import MagicMock
 except ImportError:
@@ -19,6 +19,7 @@ except RuntimeError:
 from django_rest_secureview.view_rules import *
 from . mocks import MockRequest, MockModelManager
 
+
 class ViewRulesTest(unittest.TestCase):
 
     def test_it_can_compare_param_keys(self):
@@ -28,9 +29,9 @@ class ViewRulesTest(unittest.TestCase):
         """
         request = MockRequest(data=QueryDict('dog=1&cat=2'), method="POST")
         view_rule = Params([request], None)
-        
-        check_1 = view_rule.errors_found({'params':['cat', 'dog']})
-        check_2 = view_rule.errors_found({'params':['cat', 'mouse']})
+
+        check_1 = view_rule.errors_found({'params': ['cat', 'dog']})
+        check_2 = view_rule.errors_found({'params': ['cat', 'mouse']})
 
         self.assertFalse(check_1[0])
         self.assertEqual(check_2[1].data['detail'], 'Missing keys mouse')
@@ -44,8 +45,8 @@ class ViewRulesTest(unittest.TestCase):
         request_2 = MockRequest(user=NewUser)
         model = MockModelManager()
 
-        view_rule_1 = Owner([request_1], {'pk':1})
-        view_rule_2 = Owner([request_2], {'pk':1})
+        view_rule_1 = Owner([request_1], {'pk': 1})
+        view_rule_2 = Owner([request_2], {'pk': 1})
 
         check_1 = view_rule_1.errors_found({'model': model})
         check_2 = view_rule_2.errors_found({'model': model})
@@ -59,11 +60,11 @@ class ViewRulesTest(unittest.TestCase):
         """
         request = MockRequest(data=QueryDict('dog=1&cat=2'), method="POST")
         model = MockModelManager()
-        view_rule = OwnerParams([request], {'pk':1})
+        view_rule = OwnerParams([request], {'pk': 1})
         view_rule.enforce_params = MagicMock(return_value=None)
         view_rule.enforce_owner = MagicMock(return_value=None)
-        
-        params = {'model': model, 'params':['cat', 'dog']}
+
+        params = {'model': model, 'params': ['cat', 'dog']}
         check = view_rule.errors_found(params)
 
         view_rule.enforce_params.assert_called_with(params)
@@ -80,7 +81,7 @@ class ViewRulesTest(unittest.TestCase):
                 return 1
 
         request = MockRequest()
-        view_rule = CustomRule([request], {'pk':2})
+        view_rule = CustomRule([request], {'pk': 2})
         with self.assertRaises(ValueError):
             view_rule.errors_found()
 
@@ -97,8 +98,3 @@ class ViewRulesTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-
-
-
-

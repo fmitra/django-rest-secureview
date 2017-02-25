@@ -12,7 +12,7 @@ except RuntimeError:
 
 from django_rest_secureview.decorators import require
 from django_rest_secureview.view_rules import Params, Owner, OwnerParams
-from . mocks import * 
+from . mocks import *
 
 
 class DecoratorsTest(unittest.TestCase):
@@ -38,7 +38,7 @@ class DecoratorsTest(unittest.TestCase):
 
     def test_it_should_require_foreignkey_between_user_and_model(self):
         """
-        Request object should contain an authenticated User and a 
+        Request object should contain an authenticated User and a
         model. If a foregin key relation is not available between
         the User and the model, a Response object is returned
         """
@@ -50,7 +50,8 @@ class DecoratorsTest(unittest.TestCase):
         model = MockModelManager()
 
         response_1 = require(Owner, model=model)(view)(request_1, pk=1)
-        # This should fail because a new user is being associated with the request
+        # This should fail because a new user is being
+        # associated with the request
         response_2 = require(Owner, model=model)(view)(request_2, pk=1)
 
         self.assertIsNone(response_1)
@@ -59,7 +60,7 @@ class DecoratorsTest(unittest.TestCase):
 
     def test_it_should_require_foreignkey_relation_and_params(self):
         """
-        Request object should contain both an authenticated User 
+        Request object should contain both an authenticated User
         and a model, as well as a list of user supplied params
         """
         NewUser = MagicMock()
@@ -69,21 +70,21 @@ class DecoratorsTest(unittest.TestCase):
         request_3 = MockRequest(data=QueryDict('dog=1&cat=2'), user=NewUser)
         model = MockModelManager()
 
-        response_1 = require(OwnerParams, 
-                             model=model, 
+        response_1 = require(OwnerParams,
+                             model=model,
                              params=['cat', 'dog'])(view)(request_1, pk=1)
-        
-        response_2 = require(OwnerParams, 
-                             model=model, 
+
+        response_2 = require(OwnerParams,
+                             model=model,
                              params=['cat', 'dog'])(view)(request_2, pk=1)
 
-        response_3 = require(OwnerParams, 
-                             model=model, 
+        response_3 = require(OwnerParams,
+                             model=model,
                              params=['cat', 'dog'])(view)(request_3, pk=1)
 
         self.assertIsNone(response_1)
-        self.assertEqual(response_2.data, {"detail":"Missing keys cat, dog"})
-        self.assertEqual(response_3.data, {"detail":"Unauthorized access"})
+        self.assertEqual(response_2.data, {"detail": "Missing keys cat, dog"})
+        self.assertEqual(response_3.data, {"detail": "Unauthorized access"})
 
 
 if __name__ == '__main__':
