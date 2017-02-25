@@ -1,4 +1,4 @@
-""" 
+"""
 ViewSet decorator to impose conditions enforced by
 the ViewRules
 """
@@ -18,8 +18,8 @@ def require(ViewRule, **params):
         def require(*request_args, **request_kwargs):
             view_rule = ViewRule(request_args, request_kwargs)
             failed = view_rule.errors_found(params)
-            if failed[0]: return failed[1]
+            if failed[0]:
+                return failed[1]
             return viewset(*request_args, **request_kwargs)
         return require
     return wrapper
-

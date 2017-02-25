@@ -1,4 +1,4 @@
-# py27 vs py34 compatibility 
+# py27 vs py34 compatibility
 try:
     from unittest.mock import MagicMock
 except ImportError:
@@ -7,6 +7,7 @@ except ImportError:
 
 MockUser = MagicMock()
 MockUser.is_authenticated = MagicMock(return_value=True)
+
 
 class MockModelAttr(object):
     def __init__(self, attr, value):
@@ -26,7 +27,9 @@ class MockModel(object):
     _attr_4 = MockModelAttr('attr_4', MockUser)
 
     _meta = MagicMock()
-    _meta.get_fields = MagicMock(return_value=[_attr_1, _attr_2, _attr_3, _attr_4])
+    _meta.get_fields = MagicMock(
+        return_value=[_attr_1, _attr_2, _attr_3, _attr_4]
+    )
 
     attr_1 = _attr_1.attr
     attr_2 = _attr_2.attr
@@ -56,5 +59,3 @@ class MockView(object):
 
     def retrieve_view(self, request, pk):
         pass
-
-        

@@ -1,9 +1,9 @@
 """
 ViewRules impose specific API conditons via their enforce method.
-Their goal is to ensure a User meets specific conditions 
-when accessing an API endpoint (ex. were POST params submitted in 
+Their goal is to ensure a User meets specific conditions
+when accessing an API endpoint (ex. were POST params submitted in
 the request?). If the conditions were not properly met, they should
-return a failing HTTP status code. 
+return a failing HTTP status code.
 """
 import abc
 import six
@@ -15,8 +15,8 @@ from rest_framework.response import Response
 @six.add_metaclass(abc.ABCMeta)
 class ViewRule(object):
     """
-    Template to define a set of rules to enforce on an API 
-    ViewSet. 
+    Template to define a set of rules to enforce on an API
+    ViewSet.
 
     Imposes API restrictions prior to accessing a ViewSet via the
     enforce method.
@@ -55,7 +55,8 @@ class ViewRule(object):
         :type params: dict
         :returns: Details on whether the view rules were met
         :rtype: tuple (boolean, response)
-        :raises ValueError: If non Response-type was provided by the envorce method
+        :raises ValueError: If non Response-type was provided by the
+            envorce method
         """
         response = self.enforce(params)
         errors = True if response else False
@@ -66,10 +67,10 @@ class ViewRule(object):
 
 
 class Params(ViewRule):
-    """ 
+    """
     Require specific POST params to be submitted in requests.
     In the event of a GET request, the ViewRule should skip
-    over the condition. 
+    over the condition.
     """
     def enforce_params(self, params):
         """
@@ -88,7 +89,7 @@ class Params(ViewRule):
 
         if any(missing_keys):
             all_errors = 'Missing keys '+', '.join(missing_keys)
-            data = {'detail':all_errors}
+            data = {'detail': all_errors}
             code = self.status.HTTP_400_BAD_REQUEST
             return self.response(data=data, status=code)
 
@@ -112,7 +113,7 @@ class Owner(ViewRule):
         try:
             model = params['model'].objects.get(id=self.pk['pk'])
         except model.DoesNotExist:
-            return self.response(data={'detail':'Not found'}, 
+            return self.response(data={'detail': 'Not found'},
                                  status=self.status.HTTP_404_NOT_FOUND)
 
         code = self.status.HTTP_401_UNAUTHORIZED
@@ -121,7 +122,6 @@ class Owner(ViewRule):
         if not user.is_authenticated():
             return self.response(data=data, status=code)
 
-        test_attrs = [f.name for f in model._meta.get_fields()]
         model_attrs = [getattr(model, f.name, None) for f in model._meta.get_fields()]
         if user not in model_attrs:
             return self.response(data=data, status=code)
@@ -132,14 +132,15 @@ class Owner(ViewRule):
 
 class OwnerParams(Params, Owner):
     """
-    Requires authenticated User to have a foreign key relationship with 
+    Requires authenticated User to have a foreign key relationship with
     the requested model instance and specific POST params to be submitted
     in the reqeust
     """
     def enforce(self, params):
         param_check = self.enforce_params(params)
-        if param_check: return param_check
+        if param_check:
+            return param_check
 
         owner_check = self.enforce_owner(params)
-        if owner_check: return owner_check
-
+        if owner_check:
+            return owner_check
