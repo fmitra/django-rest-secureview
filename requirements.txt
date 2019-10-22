@@ -1,4 +1,4 @@
 Django==1.10.4
-djangorestframework==3.5.3
+djangorestframework==3.9.1
 tox==2.5.0
 six==1.10.0
