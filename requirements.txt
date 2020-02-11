@@ -1,4 +1,4 @@
-Django==1.10.4
+Django==1.11.28
 djangorestframework==3.5.3
 tox==2.5.0
 six==1.10.0
